@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
 public class GridExample extends JPanel
 {
@@ -88,10 +89,11 @@ public class GridExample extends JPanel
 
 	protected class MoveController extends KeyAdapter
 	{
+		@Override
 		public void keyPressed(KeyEvent e)
 		{
 			Point current = player.getLocation();
-			Point next = null;
+			Point next;
 
 			switch (e.getKeyCode())
 			{
@@ -121,6 +123,8 @@ public class GridExample extends JPanel
 				eatSite(getSite(next));
 
 			repaint();
+
+			checkForWin();
 		}
 	}
 
@@ -226,6 +230,20 @@ public class GridExample extends JPanel
 		return d < 200;
 	}
 
+	private void checkForWin()
+	{
+		for (int i = 0; i < size.getWidth(); ++i)
+			for (int j = 0; j < size.getHeight(); ++j)
+				if (!grid[i][j].isAccessible())
+					return;
+
+		JOptionPane.showMessageDialog(
+			this,
+			"Jeej WIN!",
+			"A Happy Message",
+			JOptionPane.ERROR_MESSAGE);
+	}
+
 	/* Drawing code */
 
 	@Override
@@ -245,18 +263,18 @@ public class GridExample extends JPanel
 		g.setColor(site.getColor());
 
 		g.fillRect(
-			(int) site.getLocation().getX() * 10,
-			(int) site.getLocation().getY() * 10,
-			10, 10);
+			(int) site.getLocation().getX() * 100,
+			(int) site.getLocation().getY() * 100,
+			100, 100);
 	}
 
 	private void paintPlayer(Graphics g)
 	{
 		g.setColor(player.getColor());
 		g.fillOval(
-			(int) player.getLocation().getX() * 10,
-			(int) player.getLocation().getY() * 10,
-			10, 10);
+			(int) player.getLocation().getX() * 100,
+			(int) player.getLocation().getY() * 100,
+			100, 100);
 	}
 
 	/* Main for testing */
@@ -265,15 +283,15 @@ public class GridExample extends JPanel
 	{
 		JFrame win = new JFrame();
 
-		GridExample game = new GridExample(new Dimension(100, 40));
+		GridExample game = new GridExample(new Dimension(10, 8));
 
 		win.setTitle("Awesome");
 		win.add(game);
 
-		win.setSize(1000, 400);
+		win.setSize(1000, 800);
 		win.setVisible(true);
 
-		//psychoLoop(game);
+		// psychoLoop(game);
 	}
 
 	static private void psychoLoop(final GridExample game)
