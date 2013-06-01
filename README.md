@@ -1,9 +1,9 @@
 Java Examples
 =============
 
-Here are a bunch of examples that may help you with the Object Oriented Programming course, or with programming Java in general. Some examples are simpeler than others, but I thought it would be useful to also show some more complete programs which combine the techniques shown in the simpeler examples.
+Here are a bunch of examples that may help you with the Object Oriented Programming course, or with programming Java in general. Some examples are simpler than others, but I thought it would be useful to also show some more complete programs which combine the techniques shown in the simpler examples. If you miss an example, feel free to contact me or [create an Issue](https://github.com/jelmervdl/java-examples/issues).
 
-Demos
+Examples
 ----------
 
 ### Action example ###
