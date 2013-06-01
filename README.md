@@ -20,3 +20,6 @@ This larger demo combines the Action and Observer examples and is the tiniest co
 
 ### Grid example ###
 This is more of a fun project to be honest, it is a demonstration of how to use the code from the Drawing Example combined with the `KeyListener` interface to create a simple game which stores its data in a grid.
+
+### Method chaining example ###
+A simple example to show what really happens when you write `x.getA().getB().getC()` using a rich man.
