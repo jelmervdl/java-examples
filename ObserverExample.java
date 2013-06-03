@@ -22,6 +22,7 @@ class ObserverExample
 
 	class MyFirstView implements Observer
 	{
+		@Override
 		public void update(Observable source, Object arg)
 		{
 			MyModel model = (MyModel) source;
@@ -39,6 +40,7 @@ class ObserverExample
 			model.addObserver(this);
 		}
 
+		@Override
 		public void update(Observable source, Object arg)
 		{
 			System.out.println("MySecondView: " + model.getValue());

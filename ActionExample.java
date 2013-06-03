@@ -11,8 +11,8 @@ class ActionExample extends JFrame
 		JMenu fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
 
-		fileMenu.add(new AbstractAction("Load...")
-		{
+		fileMenu.add(new AbstractAction("Load...") {
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				doSomething();

@@ -97,11 +97,13 @@ class CounterExample
 			super(label, counter);
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			counter.increment();
 		}
 
+		@Override
 		public void update(Observable source, Object arg)
 		{
 			setEnabled(counter.canIncrement());
@@ -115,11 +117,13 @@ class CounterExample
 			super(label, counter);
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			counter.decrement();
 		}
 
+		@Override
 		public void update(Observable source, Object arg)
 		{
 			setEnabled(counter.canDecrement());
@@ -144,6 +148,7 @@ class CounterExample
 			setText(counter.getValueAsString());
 		}
 
+		@Override
 		public void update(Observable source, Object arg)
 		{
 			// I know the source of the update-call is a Counter instance
