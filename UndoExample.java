@@ -8,89 +8,20 @@ import javax.swing.undo.*;
 class UndoExample extends JFrame
 {
 	/**
-	 * This model has an undo manager which keeps track of all the performed
-	 * edits, which is only 'setName'. You can get this undo manager by calling
-	 * getUndoManager(). Observers will be notified of the changes.
+	 * A simple model which only stores a name, but is observable. (This is also
+	 * the practical reason this is an inner class.. UndoExample already extends
+	 * JFrame and could therefore not also extend Observable.)
 	 */
 	private class Model extends Observable
 	{
 		private String name;
-
-		private UndoManager undoManager;
-
-		// Let's use an inner class to hide this class from the public world
-		// and to have easy access to the internals of the model, mainly
-		// setNameInterval(String).
-		private class UndoSetName extends AbstractUndoableEdit
-		{
-			public String newName;
-
-			public String prevName;
-
-			public UndoSetName(String prevName, String newName)
-			{
-				// Store both the previous name and the new name which we can
-				// use to undo or redo this edit.
-				this.prevName = prevName;
-				this.newName = newName;
-			}
-
-			@Override
-			public String getPresentationName()
-			{
-				// This, plus 'Undo' or 'Redo ' will be the name of this edit
-				return "change to " + newName;
-			}
-
-			@Override
-			public void undo() throws CannotUndoException
-			{
-				// Don't forget to call super.undo() or the 'redo' edit won't be
-				// added to the undo manager
-				super.undo();
-
-				// Call the internal method so no extra undo or redo edit is
-				// added to the undo manager.
-				Model.this.setNameInternal(prevName);
-			}
-
-			@Override
-			public void redo() throws CannotUndoException
-			{
-				// Don't forget to call super.redo() or the 'undo' edit won't be
-				// added to the undo manager
-				super.redo();
-				Model.this.setNameInternal(newName);
-			}
-		}
-
-		public Model()
-		{
-			undoManager = new UndoManager();
-		}
-
-		public UndoManager getUndoManager()
-		{
-			return undoManager;
-		}
-
+		
 		public String getName()
 		{
 			return name;
 		}
 
-		public void setName(String name)
-		{
-			// Add the modification to the undo manager
-			undoManager.addEdit(new UndoSetName(getName(), name));
-
-			// .. and really set the name (and notify all observers)
-			setNameInternal(name);
-		}
-
-		// This helper method is only called from within this class (and the
-		// Edit inner class) and does the real name changing
-		private void setNameInternal(String name)
+		private void setName(String name)
 		{
 			this.name = name;
 			setChanged();
@@ -98,11 +29,59 @@ class UndoExample extends JFrame
 		}
 	}
 
+	/**
+	 * This innner class represents the change of a name by keeping both the old
+	 * and the new value.
+	 */
+	private class UndoSetName extends AbstractUndoableEdit
+	{
+		public String newName;
+
+		public String prevName;
+
+		public UndoSetName(String prevName, String newName)
+		{
+			// Store both the previous name and the new name which we can
+			// use to undo or redo this edit.
+			this.prevName = prevName;
+			this.newName = newName;
+		}
+
+		@Override
+		public String getPresentationName()
+		{
+			// This, plus 'Undo' or 'Redo ' will be the name of this edit
+			return "change to " + newName;
+		}
+
+		@Override
+		public void undo() throws CannotUndoException
+		{
+			// Don't forget to call super.undo() or the 'redo' edit won't be
+			// added to the undo manager
+			super.undo();
+
+			// Call the internal method so no extra undo or redo edit is
+			// added to the undo manager.
+			model.setName(prevName);
+		}
+
+		@Override
+		public void redo() throws CannotUndoException
+		{
+			// Don't forget to call super.redo() or the 'undo' edit won't be
+			// added to the undo manager
+			super.redo();
+			model.setName(newName);
+		}
+	}
+
+	private Model model = new Model();
+	
+	private UndoManager undoManager = new UndoManager();
+	
 	public UndoExample()
 	{
-		// Here lives our name:
-		final Model model = new Model();
-
 		// Create a text field
 		final JTextField field = new JTextField();
 
@@ -110,6 +89,10 @@ class UndoExample extends JFrame
 		field.addActionListener(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Register the edit with the undo manager
+				undoManager.addEdit(new UndoSetName(model.getName(), field.getText()));
+
+				// .. then also apply it to the model itself.
 				model.setName(field.getText());
 			}
 		});
@@ -133,7 +116,7 @@ class UndoExample extends JFrame
 		undo.addActionListener(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				model.getUndoManager().undo();
+				undoManager.undo();
 			}
 		});
 
@@ -141,8 +124,8 @@ class UndoExample extends JFrame
 		model.addObserver(new Observer() {
 			@Override
 			public void update(Observable source, Object arg) {
-				undo.setText(model.getUndoManager().getUndoPresentationName());
-				undo.setEnabled(model.getUndoManager().canUndo());
+				undo.setText(undoManager.getUndoPresentationName());
+				undo.setEnabled(undoManager.canUndo());
 			}
 		});
 
@@ -152,14 +135,14 @@ class UndoExample extends JFrame
 		redo.addActionListener(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				model.getUndoManager().redo();
+				undoManager.redo();
 			}
 		});
 		model.addObserver(new Observer() {
 			@Override
 			public void update(Observable source, Object arg) {
-				redo.setText(model.getUndoManager().getRedoPresentationName());
-				redo.setEnabled(model.getUndoManager().canRedo());
+				redo.setText(undoManager.getRedoPresentationName());
+				redo.setEnabled(undoManager.canRedo());
 			}
 		});
 
