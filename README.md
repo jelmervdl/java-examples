@@ -23,3 +23,6 @@ This is more of a fun project to be honest, it is a demonstration of how to use 
 
 ### Method chaining example ###
 A simple example to show what really happens when you write `x.getA().getB().getC()` using a rich man.
+
+### Undo Manager example ###
+This program contains a model that has an `UndoManager` which it uses to store all the edits made. The example also demonstrates how to keep all the places where the data is used up to date, and is therefore also quite a nice example of the Observable pattern.
