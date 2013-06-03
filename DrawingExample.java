@@ -9,12 +9,14 @@ public class DrawingExample extends JPanel
 	@Override
 	protected void paintComponent(Graphics g)
 	{
+		super.paintComponent(g);
+
 		for (int x = 0; x < getWidth() / 10; ++x)
 			for (int y = 0; y < getHeight() / 10; ++y)
-				drawCharacter(x, y, g);
+				drawSquare(x, y, g);
 	}
 
-	private void drawCharacter(int x, int y, Graphics g)
+	private void drawSquare(int x, int y, Graphics g)
 	{
 		g.setColor(Color.RED);
 		g.fillOval(x * 20 + 2, y * 20 + 2, 6, 6);
@@ -29,6 +31,7 @@ public class DrawingExample extends JPanel
 		win.add(new DrawingExample());
 
 		win.setSize(400, 400);
+		win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		win.setVisible(true);
 	}
 }
